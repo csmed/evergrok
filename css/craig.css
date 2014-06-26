@@ -1,0 +1,83 @@
+/* div { border: 1px solid blue; } */
+body {
+	font-family: 'Open Sans', sans-serif;
+	font-size:14px;
+	background: lightgrey;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+div {
+	padding: 0;
+	margin: 0;
+}
+
+/* page */
+.setwidth {
+    width: 340px !important;
+}
+#page {
+    margin-left: auto;
+    margin-right: auto;
+	background: white;
+}
+
+/* toolbar */
+#fixedbar {
+	background: #dae2f1;
+	box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.15);
+	position: fixed;
+	top: 0;
+}
+#controls {
+	padding-top:3px;
+	padding-bottom:3px;
+	height:34px;
+}
+.ctrl > img {
+	width:32px;
+}
+#trays {
+	margin-top:3px;
+	margin-bottom:3px;
+}
+.quarter {
+	vertical-align: middle;
+    display: inline-block;
+    width: 24%;
+    text-align: center;
+}
+.fifth {
+	vertical-align: middle;
+    display: inline-block;
+    width: 19%;
+    text-align: center;
+}
+div.tray {
+	font-size: 12px;
+}
+img.tray {
+	width:32px;
+}
+.badge {
+  background: #BA070F;
+  color: #fff;
+  padding: 1px 7px;
+  position: absolute;
+  z-index: 999;
+  border-radius: .8em;
+  border: 2px solid #fff;
+}
+
+/* content */
+#heading {
+	font-weight: bold;
+	margin-top: 95px;
+	padding: 5px;
+	padding-bottom: 10px;
+    width: 100%;
+}
+#content {
+	padding-top:5px;
+    width: 100%;
+}
