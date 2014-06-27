@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>EverGrok</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta http-equiv="Default-Style" content="text/css">
+<meta http-equiv="Content-Language" content="text/javascript">
+
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/idangerous.swiper.css">
+<link rel="stylesheet" href="/css/revise.css">
+
+<!--
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+-->
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="/js/idangerous.swiper-2.1.min.js"></script>
+<script src="/js/revise.js"></script>
+</head>
+<body>
+
+<div id="page" class="fullwidth" data-role="page">
+    <div id="fixedbar" class="fullwidth" data-role="header">
+        <div id="controls">
+			<div class="fifth ctrl"><img src="img/back.png"></div>
+			<div class="fifth ctrl"><img onclick="shareMenu()" class="ptr" src="img/share.png"></div>
+			<div class="fifth ctrl">3 / 25</div>
+			<div class="fifth ctrl"><img src="img/hand.png"></div>
+			<div class="fifth ctrl"><img onclick="lessCommon()" class="ptr" src="img/menu.png"></div>
+        </div>
+        <div id="trays">
+            <div class="quarter tray"><img class="tray" src="img/cards4a.png"><span id="badge1" class="badge">12</span><br>Newbie</div>
+            <div class="quarter tray"><img class="tray" src="img/cards1.png"><span id="badge2" class="badge">3</span><br>Beginner</div>
+            <div class="quarter tray"><img class="tray" src="img/cards2.png"><span id="badge3" class="badge">7</span><br>Interm-</div>
+            <div class="quarter tray"><img class="tray" src="img/cards0.png"><span id="badge4" class="badge">0</span><br>Expert</div>
+        </div>
+    </div>
+	<div id="container" class="belowtrays fullwidth minheight" role="main" class="ui-content">
+		<div id="heading">
+			<h1>10 things you need to remember very very well (25 notes)</h1>
+		</div>
+		<div id="content" class="swiper-container minheight">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide"> slide 1: <img src="img/cards0.png"> </div>
+				<div class="swiper-slide"> slide 2: <img src="img/cards1.png"> </div>
+				<div class="swiper-slide">
+					<div class="content-slide">
+						<p class="title">slide 3: Yo! Bro!</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="pagination"></div>
+	</div>
+
+	<div id="prev" class="middle fixed" style="top:0;left:0;z-index:2;"><img onclick="previous(true);" src="img/previous.png" style="width:15px"></div>
+	<div id="next" class="middle fixed" style="top:0;right:0;z-index:2;"><img onclick="knowIt(true);" src="img/next.png" style="width:15px"></div>
+
+	<div id="clickoutside" class="fullheight fullwidth fixed" style="display:none" onclick="hideMenus()">
+	</div>
+	<div id="lesscommon" class="belowcontrols fullwidth fixed" style="display:none">
+		<div class="closebtn"><img onclick="hideLessCommon();" src="img/close24.png"></div>
+		<p onclick="mainMenu()">Back to Main Menu</p>
+		<p onclick="reallyKnowIt()">I know this REALLY well</p>
+		<p onclick="deleteIt()">Delete this note</p>
+		<p onclick="skipIt()">Skip this note</p>
+	</div>
+	<div id="sharemenu" class="belowcontrols fullwidth fixed" style="display:none">
+		<div class="closebtn"><img onclick="hideShare();" src="img/close24.png"></div>
+		<h2 style="padding-left:10px;">Share "10 things you need to remember..."</h2>
+		<div class="third shareicon"><img class="shareicon" src="img/facebook.png"   onclick="share('facebook',   'revisy.com/revise.html?s=1', 'text')"></div>
+		<div class="third shareicon"><img class="shareicon" src="img/twitter.png"    onclick="share('twitter',    'revisy.com/revise.html?s=1', 'text')"></div>
+		<div class="third shareicon"><img class="shareicon" src="img/googleplus.png" onclick="share('googleplus', 'revisy.com/revise.html?s=1', 'text')"></div>
+		<div class="third shareicon"><img class="shareicon" src="img/linkedin.png"   onclick="share('linkedin',   'revisy.com/revise.html?s=1', 'text')"></div>
+		<div class="third shareicon"><img class="shareicon" src="img/pinterest.png"  onclick="share('pinterest',  'revisy.com/revise.html?s=1', 'text')"></div>
+		<div class="third shareicon"><img class="shareicon" src="img/email.png"      onclick="share('email',      'revisy.com/revise.html?s=1', 'text')"></div>
+	</div>
+</div>
+
+</body>
+</html>
