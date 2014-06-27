@@ -13,13 +13,6 @@
 	$sql = "select $noteId as note_id, '<h1>Hi Craig!</h1>how are you? $noteId' as contents";
 	$rows = sql($sql);
 
-	if ($return["n_notes"] > 0) {
-		$return["errormsg"] = "";
-	}
-	else {
-		$return["errormsg"] = "Summary not found";
-	}
-
 	if (count($rows) == 0)
 		nak("Note $noteID not found");
 	else
