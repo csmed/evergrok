@@ -9,6 +9,7 @@ $(document).ready(function() {
 });
 
 $( window ).on( "orientationchange", function( event ) {
+	log("orientation change");
 	setSizes();
 	log( "This device is in " + event.orientation + " mode" );
 });
@@ -17,18 +18,23 @@ $( window ).on( "orientationchange", function( event ) {
 //$(window).on("load", function() {
 //$(document).ready(function() {
 $(window).load(function() {
+	log("window.load()");
 	setTimeout(function(){
 		scrollTop();
 		setSizes();
 		initSwiper();
 	},100);
 
-	// log some stuff (DEBUG)
+	// start fetching a few more notes
+	// prefetch(); // TODO: turn this back on
+
+	/*
 	log("heading.outerHeight=" + $("#heading").outerHeight());
 	log("window innerWidth=" + window.innerWidth);
 	log("body innerWidth=" + $('body').innerWidth());
 	log("window outerWidth=" + window.outerWidth);
 	log("window innerHeight=" + window.innerHeight);
+	*/
 });
 
 function scrollTop () {
@@ -55,15 +61,17 @@ function setSizes () { // set fixed size element to screen extents (if small scr
 		$(this).attr('style', $(this).attr('style') + '; width: ' + width + 'px !important;');
 	});
 	$('.minheight').each(function() {
-		$(this).attr('style', $(this).attr('style') + '; min-height: ' + (height - $(this).position().top) + 'px !important;');
+		$(this).attr('style', $(this).attr('style') + '; min-height: ' + Math.round(height - $(this).position().top) + 'px !important;');
 	});
 	$('.swiper-container').each(function() {
 		$(this).attr('style', $(this).attr('style') + '; width: ' + width + 'px !important;');
 	});
-	$('.middle').css('margin-top', (height/2));
+	$('.middle').css('margin-top', Math.round(height/2));
 
+	/*
 	log("height=" + height);
 	log("width=" + width);
+	*/
 }
 
 function log (text) {
@@ -71,20 +79,51 @@ function log (text) {
 	// $('#content').append(text + "<br>");
 }
 
-
-function nextNote () {
+function prefetch () {
+	var note_id = 0;
 	var slideHTML = "";
-	console.log('next');
-	if (noteIndex >= noteIDs.length -1) {
-		alert("all done! We need to take you somewhere now");
-	} else {
-		noteIndex++;
-		while (noteIndex > nLoaded - 3 && nLoaded < noteIDs.length) { // have at least the next three slides loaded
+	var startIndex = nLoaded;
+	var endIndex = noteIndex + 5; // have at least the next FIVE slides loaded
+	if (endIndex >= noteIDs.length)
+		endIndex = noteIDs.length-1;
+	
+	if (endIndex >= startIndex) {
+		//log("startIndex=" + startIndex + "    endIndex=" + endIndex + "     noteIndex=" + noteIndex);
+		for (i = startIndex; i <= endIndex; i++) {
 			// preload note
-			slideHTML = "<p>this is slide</p><p>number " + (nLoaded+1) + "</p><p>with note ID: " + noteIDs[nLoaded] + "</p><h2>Yippee!!</h2>";
-			mySwiper.createSlide(slideHTML).append();
+			//log("fetching note_id=" + note_id);
+			note_id = noteIDs[i];
+			$.ajax({
+				type: 'POST',
+				url: 'php/get_note.php',
+				data: { note_id: note_id },
+				dataType: 'json',
+				success: function(j) {
+					//log(j);
+					slideHTML = "<p>this is a slide</p><p>with note ID: " + j.note_id + "</p><h2>Yippee!!</h2>" + j.contents;
+					mySwiper.createSlide(slideHTML).append();
+					if (startIndex == noteIDs.length-1) {
+						// append the "slideshow finished" slide
+						slideHTML = $('#shareTemplate').html();
+						mySwiper.createSlide(slideHTML).append();
+					}
+				},
+				error: function(x,s,e) {
+					alert(x.responseText);
+				}
+			});
 			nLoaded++;
 		}
+	}
+}
+
+function nextNote () {
+	if (noteIndex >= noteIDs.length) {
+		log("all done! We need to take you somewhere now");
+		log("user SHOULD be seeing the 'last slide' page now");
+	} else {
+		noteIndex++;
+		prefetch();
 	}
 	log("noteIndex=" + noteIndex);
 	//log("noteIDs=" + noteIDs[noteIndex]);
@@ -105,34 +144,35 @@ function prevNote () {
 
 
 function skipIt () {
-	log("skipIt()");
+	//log("skipIt()");
 	hideLessCommon();
 	mySwiper.swipeNext();
 }
 
 function knowIt (slide) {
-	log("knowIt(" + slide + ")");
+	//log("knowIt(" + slide + ")");
 	hideLessCommon();
 	if (slide)
 		mySwiper.swipeNext();
 	else
 		nextNote();
+	scrollTop();
 }
 
 function reallyKnowIt () {
-	log("reallyKnowIt()");
+	//log("reallyKnowIt()");
 	hideLessCommon();
     mySwiper.swipeNext()
 }
 
 function forgotIt () {
-	log("forgotIt()");
+	//log("forgotIt()");
 	hideLessCommon();
 	mySwiper.swipeNext();
 }
 
 function previous (slide) {
-	log("previous(" + slide + ")");
+	//log("previous(" + slide + ")");
 	hideLessCommon();
 	if (slide)
 		mySwiper.swipePrev()
@@ -141,7 +181,7 @@ function previous (slide) {
 }
 
 function deleteIt () {
-	log("deleteIt()");
+	//log("deleteIt()");
 	hideLessCommon();
 	mySwiper.swipeNext();
 }
