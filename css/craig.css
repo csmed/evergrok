@@ -11,10 +11,20 @@ div {
 	padding: 0;
 	margin: 0;
 }
+.ptr {
+	cursor: pointer;
+}
 
 /* page */
-.setwidth {
-    width: 340px !important;
+.fullwidth {
+    width: 380px !important;
+}
+.fullheight {
+    height: 680px !important;
+}
+.fixed {
+	position: fixed !important;
+	top: 0 !important;
 }
 #page {
     margin-left: auto;
@@ -55,6 +65,7 @@ div {
 }
 div.tray {
 	font-size: 12px;
+	position: relative;
 }
 img.tray {
 	width:32px;
@@ -65,14 +76,20 @@ img.tray {
   padding: 1px 7px;
   position: absolute;
   z-index: 999;
-  border-radius: .8em;
+  border-radius: 1em;
   border: 2px solid #fff;
+  min-height:18px;
 }
 
 /* content */
+.belowcontrols {
+	margin-top: 40px;
+}
+.belowtrays {
+	margin-top: 95px;
+}
 #heading {
 	font-weight: bold;
-	margin-top: 95px;
 	padding: 5px;
 	padding-bottom: 10px;
     width: 100%;
@@ -80,4 +97,15 @@ img.tray {
 #content {
 	padding-top:5px;
     width: 100%;
+}
+
+/* menus */
+#lesscommon {
+	background: white;
+}
+#lesscommon > p {
+	padding-left:20px;
+}
+#lesscommon > p > a {
+	text-decoration: none;
 }
