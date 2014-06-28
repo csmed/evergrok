@@ -54,9 +54,6 @@ function setSizes () { // set fixed size element to screen extents (if small scr
 		width = $('body').innerWidth();
 
 	// set elements with full width/height
-	$('.fullheight').each(function() {
-		$(this).attr('style', $(this).attr('style') + '; height: ' + height + 'px !important;');
-	});
 	$('.fullwidth').each(function() {
 		$(this).attr('style', $(this).attr('style') + '; width: ' + width + 'px !important;');
 	});
