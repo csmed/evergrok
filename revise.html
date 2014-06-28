@@ -23,17 +23,33 @@
 <div id="page" class="fullwidth" data-role="page">
     <div id="fixedbar" class="fullwidth" data-role="header">
         <div id="controls">
-			<div class="fifth ctrl"><img src="img/back.png"></div>
-			<div class="fifth ctrl"><img onclick="shareMenu()" class="ptr" src="img/share.png"></div>
+			<div class="fifth ctrl"><img onclick="exit()" src="img/back24.png"></div>
+			<div class="fifth ctrl"><img onclick="shareMenu()" class="ptr" src="img/share24.png"></div>
 			<div class="fifth ctrl">3 / 25</div>
 			<div class="fifth ctrl"><img src="img/hand.png"></div>
-			<div class="fifth ctrl"><img onclick="lessCommon()" class="ptr" src="img/menu.png"></div>
+			<div class="fifth ctrl"><img onclick="lessCommon()" class="ptr" src="img/menu24.png"></div>
         </div>
         <div id="trays">
-            <div class="quarter tray"><img class="tray" src="img/cards4a.png"><span id="badge1" class="badge">12</span><br>New Facts</div>
-            <div class="quarter tray"><img class="tray" src="img/cards1.png"><span id="badge2" class="badge">3</span><br>Learning</div>
-            <div class="quarter tray"><img class="tray" src="img/cards2.png"><span id="badge3" class="badge">7</span><br>Know It</div>
-            <div class="quarter tray"><img class="tray" src="img/cards0.png"><span id="badge4" class="badge">0</span><br>Expert</div>
+            <div class="quarter">
+				<div class="tray">
+					<img id="tray1" class="tray" src="img/cards4a.png"><span id="badge1" class="badge">12</span>
+				</div>
+				<span class="tray">New Item</span></div>
+            <div class="quarter">
+				<div class="tray">
+					<img id="tray2" class="tray" src="img/cards1.png"><span id="badge2" class="badge">3</span>
+				</div>
+				<span class="tray">Learning</span></div>
+            <div class="quarter">
+				<div class="tray">
+					<img id="tray3" class="tray" src="img/cards2.png"><span id="badge3" class="badge">7</span>
+				</div>
+				<span class="tray">Know It</span></div>
+            <div class="quarter">
+				<div class="tray">
+					<img id="tray4" class="tray" src="img/cards0.png"><span id="badge4" class="badge">0</span>
+				</div>
+				<span class="tray">Expert</span></div>
         </div>
     </div>
 	<div id="container" class="belowtrays minheight" role="main" class="ui-content">

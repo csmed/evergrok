@@ -5,7 +5,7 @@ var fromBucket = 1;
 var nLoaded = 3;
 
 $(document).ready(function() {
-	// nothing yet...
+	randomizeTrays();
 });
 
 $( window ).on( "orientationchange", function( event ) {
@@ -117,12 +117,30 @@ function prefetch () {
 	}
 }
 
+// TEST - randomize trays to test visual appearance
+function randomizeTrays () {
+	var nCards = 0;
+	var activeTray = Math.floor(Math.random() * 4) + 1; // 1 .. 4
+	var badgeFactor = Math.floor(Math.random() * 5) + 1; // 1 .. 5
+	for (i=0; i<=4; i++) {
+		if (i == activeTray) {
+			nCards = Math.floor(Math.random() * 4) + 1; // 1 .. 4
+			$('#tray' + i).attr('src', '/img/cards' + nCards + 'a.png');
+		} else {
+			nCards = Math.floor(Math.random() * 5); // 0 .. 4
+			$('#tray' + i).attr('src', '/img/cards' + nCards + '.png');
+		}
+		$('#badge' + i).html(nCards * badgeFactor);
+	}
+}
+
 function nextNote () {
 	if (noteIndex >= noteIDs.length) {
 		log("all done! We need to take you somewhere now");
 		log("user SHOULD be seeing the 'last slide' page now");
 	} else {
 		noteIndex++;
+		randomizeTrays();
 		prefetch();
 	}
 	log("noteIndex=" + noteIndex);
@@ -136,6 +154,7 @@ function prevNote () {
 		return false;
 	} else {
 		noteIndex--;
+		randomizeTrays();
 	}
 	log("noteIndex=" + noteIndex);
 	//log("noteID=" + noteIDs[noteIndex]);
@@ -184,6 +203,10 @@ function deleteIt () {
 	//log("deleteIt()");
 	hideLessCommon();
 	mySwiper.swipeNext();
+}
+
+function exit () {
+	alert("exit() called");
 }
 
 function hideMenus () {

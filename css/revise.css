@@ -51,22 +51,26 @@ h3 {
 
 /* toolbar */
 #fixedbar {
-	background: #dae2f1;
+	background: #4A8AF4;
 	box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.15);
 	position: fixed;
 	top: 0;
 	z-index: 2;
 }
 #controls {
-	padding-top:3px;
-	padding-bottom:3px;
-	height:34px;
+	padding-top:12px;
+	padding-bottom:12px;
+	height:24px;
+}
+.ctrl {
+	font-size: 16px;
+	height:24px;
 }
 .ctrl > img {
-	width:32px;
+	height:24px;
 }
 #trays {
-	margin-top:3px;
+	margin-top:0px;
 	margin-bottom:3px;
 }
 .third {
@@ -88,11 +92,15 @@ h3 {
     text-align: center;
 }
 div.tray {
-	font-size: 12px;
-	position: relative;
+	height: 32px;
 }
 img.tray {
-	width: 32px;
+	height: 32px;
+}
+span.tray {
+	display: block;
+	font-size: 12px;
+	font-weight: 600;
 }
 .badge {
   background: #BA070F;
