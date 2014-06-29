@@ -1,11 +1,14 @@
-var noteIDs = [3, 15, 21, 34, 40, 54, 67, 73, 82, 93];
-var noteIndex = 0;
-var nNotes = 100; // number of notes in this summary
-var fromBucket = 1;
-var nLoaded = 3;
+var summary_id    = -1;
+var notes         = {}; // multidimensional array of notes { note_id, bucket, note }
+var visibleIndex  = 0;  // current 'notes' array index for visible note
+var nRevNotes     = 0;  // number of notes to revise
+var nSummaryNotes = 0;  // number of notes in this summary
+var fromBucket    = 0;  // bucket of visible note
+var moreNotes     = true;
 
 $(document).ready(function() {
-	randomizeTrays();
+	// fetch a few notes
+	prefetch(true);
 });
 
 $( window ).on( "orientationchange", function( event ) {
@@ -18,15 +21,11 @@ $( window ).on( "orientationchange", function( event ) {
 //$(window).on("load", function() {
 //$(document).ready(function() {
 $(window).load(function() {
-	log("window.load()");
 	setTimeout(function(){
 		scrollTop();
 		setSizes();
 		initSwiper();
 	},100);
-
-	// start fetching a few more notes
-	// prefetch(); // TODO: turn this back on
 
 	/*
 	log("heading.outerHeight=" + $("#heading").outerHeight());
@@ -76,40 +75,60 @@ function log (text) {
 	// $('#content').append(text + "<br>");
 }
 
-function prefetch () {
-	var note_id = 0;
-	var slideHTML = "";
-	var startIndex = nLoaded;
-	var endIndex = noteIndex + 5; // have at least the next FIVE slides loaded
-	if (endIndex >= noteIDs.length)
-		endIndex = noteIDs.length-1;
-	
-	if (endIndex >= startIndex) {
-		//log("startIndex=" + startIndex + "    endIndex=" + endIndex + "     noteIndex=" + noteIndex);
-		for (i = startIndex; i <= endIndex; i++) {
-			// preload note
-			//log("fetching note_id=" + note_id);
-			note_id = noteIDs[i];
+function prefetch (initial) {
+	if (moreNotes) {
+		log("prefetch");
+		var slideHTML = "";
+		// load at least FIVE notes ahead
+		if (initial || notes.length <= visibleIndex + 5) {
 			$.ajax({
 				type: 'POST',
-				url: 'php/get_note.php',
-				data: { note_id: note_id },
+				url: 'php/get_summary.php',
+				data: { summary_id: summary_id, fetch_to: (visibleIndex + 5) },
 				dataType: 'json',
 				success: function(j) {
-					//log(j);
-					slideHTML = "<p>this is a slide</p><p>with note ID: " + j.note_id + "</p><h2>Yippee!!</h2>" + j.contents;
-					mySwiper.createSlide(slideHTML).append();
-					if (startIndex == noteIDs.length-1) {
+					log(j);
+					// j.title
+					// j.total_count
+					// j.rev_count
+					// j.more
+					// j.notes { note_id, bucket, note }
+					
+					// summary info
+					if (initial) {
+						$('#heading').html("<h2>" + j.title + "(" + j.total_count + " notes)</h2>");
+						nRevNotes = j.rev_count;
+						$('#rev_counter').html("1 / " + nRevNotes);
+						if (j.more == 0)
+							moreNotes = false;
+
+						// save notes in 'notes' array
+						notes = j.notes;
+						log(notes);
+					} else {
+						// append new notes to 'notes' array
+						notes = notes.concat(j.notes);
+						log(notes);
+					}
+					
+					// get individual note contents
+					for (i=0; i<j.notes.length; i++) {
+						slideHTML = "<h3>this is a slide</h3><p>with note ID: " + j.notes[i].note_id + "</p><h2>Contents:</h2>" + j.notes[i].note;
+						mySwiper.createSlide(slideHTML).append();
+					}
+					
+					// check to see if there is more to come after this set
+					if (j.more == 0) {
 						// append the "slideshow finished" slide
 						slideHTML = $('#shareTemplate').html();
 						mySwiper.createSlide(slideHTML).append();
+						moreNotes = false;
 					}
 				},
 				error: function(x,s,e) {
 					alert(x.responseText);
 				}
 			});
-			nLoaded++;
 		}
 	}
 }
@@ -117,7 +136,7 @@ function prefetch () {
 // TEST - randomize trays to test visual appearance
 function randomizeTrays () {
 	var nCards = 0;
-	var activeTray = Math.floor(Math.random() * 4) + 1; // 1 .. 4
+	var activeTray = notes[visibleIndex].bucket; // Math.floor(Math.random() * 4) + 1; // 1 .. 4
 	var badgeFactor = Math.floor(Math.random() * 5) + 1; // 1 .. 5
 	for (i=0; i<=4; i++) {
 		if (i == activeTray) {
@@ -132,29 +151,28 @@ function randomizeTrays () {
 }
 
 function nextNote () {
-	if (noteIndex >= noteIDs.length) {
+	if (visibleIndex < nRevNotes-1) {
+		visibleIndex++;                       // TODO: deal with the possibility of sliding two slides in one go
+		log("visibleIndex=" + visibleIndex);
+		randomizeTrays();
+		prefetch(false);
+	} else {
 		log("all done! We need to take you somewhere now");
 		log("user SHOULD be seeing the 'last slide' page now");
-	} else {
-		noteIndex++;
-		randomizeTrays();
-		prefetch();
 	}
-	log("noteIndex=" + noteIndex);
-	//log("noteIDs=" + noteIDs[noteIndex]);
 	return true;
 }
 
 function prevNote () {
-	if (noteIndex <= 0) {
+	if (visibleIndex <= 0) {
 		alert("there's no going back");
 		return false;
 	} else {
-		noteIndex--;
+		visibleIndex--;                        // TODO: deal with the possibility of sliding two slides in one go
 		randomizeTrays();
 	}
-	log("noteIndex=" + noteIndex);
-	//log("noteID=" + noteIDs[noteIndex]);
+	log("visibleIndex=" + visibleIndex);
+	//log("noteID=" + noteIDs[visibleIndex]);
 	return true;
 }
 
@@ -188,7 +206,7 @@ function forgotIt () {
 }
 
 function previous (slide) {
-	//log("previous(" + slide + ")");
+	log("previous(" + slide + ")");
 	hideLessCommon();
 	if (slide)
 		mySwiper.swipePrev()
@@ -291,6 +309,8 @@ function share (site, url, txt) {
 
 	var link = map[site].replace('%URL%', encodeURIComponent('http://' + url)).replace('%TXT%', encodeURIComponent(txt));
 	console.log(link);
+
+	// TODO: add ga.send() to "/share"
 
 	window.open(link, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
 }
