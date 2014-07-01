@@ -51,7 +51,7 @@
 	else {
 		// get summary header info
  		$sql = "select $summaryId as summary_id, '12 reasons why Scottie is awesome' as title ";
-		$sql .= " , 27 as notes , 8 as tray1, 5 as tray2, 4 as tray3, 2 as tray4 ";
+		$sql .= " , 27 as notes , 10 as tray1, 3 as tray2, 7 as tray3, 2 as tray4 ";
 		$rows = sql($sql);
 
 		// if summary doesn't exist
@@ -65,35 +65,45 @@
 		// return title
 		$return["title"]       = $rows[0]['title'] . ' (from database)';
 		$return["total_count"] = $rows[0]['notes'];
-		$return["trays"][1]    = $rows[0]['tray1'];
-		$return["trays"][2]    = $rows[0]['tray2'];
-		$return["trays"][3]    = $rows[0]['tray3'];
-		$return["trays"][4]    = $rows[0]['tray4'];
+		$return["trays"][1]    = intval($rows[0]['tray1']);
+		$return["trays"][2]    = intval($rows[0]['tray2']);
+		$return["trays"][3]    = intval($rows[0]['tray3']);
+		$return["trays"][4]    = intval($rows[0]['tray4']);
 
 		// get notes
 		// .action is added to reduce javascript processing time
-		$sql = "select 1 as note_id, 'This is note ONE' as note, 2 as tray, 1 as action ";
-		$sql .= " UNION select 2 as note_id, 'This is note 2' as note, 1 as tray, 1 as action ";
-		$sql .= " UNION select 3 as note_id, 'This is note 3' as note, 3 as tray, 1 as action ";
-		$sql .= " UNION select 4 as note_id, 'This is note 4' as note, 1 as tray, 1 as action ";
-		$sql .= " UNION select 5 as note_id, 'This is note 5' as note, 4 as tray, 1 as action ";
-		$sql .= " UNION select 6 as note_id, 'This is note 6' as note, 2 as tray, 1 as action ";
-		$sql .= " UNION select 7 as note_id, 'This is note 7' as note, 1 as tray, 1 as action ";
-		$sql .= " UNION select 8 as note_id, 'This is note 8' as note, 3 as tray, 1 as action ";
-		$sql .= " UNION select 9 as note_id, 'This is note 9' as note, 2 as tray, 1 as action ";
-		$sql .= " UNION select 10 as note_id, 'This is note 10' as note, 1 as tray, 1 as action ";
-		$sql .= " UNION select 11 as note_id, 'This is note 11' as note, 2 as tray, 1 as action ";
-		$sql .= " UNION select 12 as note_id, 'This is note 12' as note, 1 as tray, 1 as action ";
-		$sql .= " UNION select 13 as note_id, 'This is note 13' as note, 3 as tray, 1 as action ";
-		$sql .= " UNION select 14 as note_id, 'This is note 14' as note, 1 as tray, 1 as action ";
-		$sql .= " UNION select 15 as note_id, 'This is note 15' as note, 4 as tray, 1 as action ";
-		$sql .= " UNION select 16 as note_id, 'This is note 16' as note, 2 as tray, 1 as action ";
-		$sql .= " UNION select 17 as note_id, 'This is note 17' as note, 1 as tray, 1 as action ";
-		$sql .= " UNION select 18 as note_id, 'This is note 18' as note, 3 as tray, 1 as action ";
-		$sql .= " UNION select 19 as note_id, 'This is note 19' as note, 2 as tray, 1 as action ";
-		$sql .= " UNION select 20 as note_id, 'This is note 20' as note, 1 as tray, 1 as action ";
+		$sql = "select 1 as note_id, 'This is note ONE' as note, 2 as tray ";
+		$sql .= " UNION select 2 as note_id, 'This is note 2' as note, 1 as tray ";
+		$sql .= " UNION select 3 as note_id, 'This is note 3' as note, 3 as tray ";
+		$sql .= " UNION select 4 as note_id, 'This is note 4' as note, 1 as tray ";
+		$sql .= " UNION select 5 as note_id, 'This is note 5' as note, 4 as tray ";
+		$sql .= " UNION select 6 as note_id, 'This is note 6' as note, 2 as tray ";
+		$sql .= " UNION select 7 as note_id, 'This is note 7' as note, 1 as tray ";
+		$sql .= " UNION select 8 as note_id, 'This is note 8' as note, 3 as tray ";
+		$sql .= " UNION select 9 as note_id, 'This is note 9' as note, 1 as tray ";
+		$sql .= " UNION select 10 as note_id, 'This is note 10' as note, 1 as tray ";
+		$sql .= " UNION select 11 as note_id, 'This is note 11' as note, 2 as tray ";
+		$sql .= " UNION select 12 as note_id, 'This is note 12' as note, 1 as tray ";
+		$sql .= " UNION select 13 as note_id, 'This is note 13' as note, 3 as tray ";
+		$sql .= " UNION select 14 as note_id, 'This is note 14' as note, 1 as tray ";
+		$sql .= " UNION select 15 as note_id, 'This is note 15' as note, 4 as tray ";
+		$sql .= " UNION select 16 as note_id, 'This is note 16' as note, 1 as tray ";
+		$sql .= " UNION select 17 as note_id, 'This is note 17' as note, 1 as tray ";
+		$sql .= " UNION select 18 as note_id, 'This is note 18' as note, 3 as tray ";
+		$sql .= " UNION select 19 as note_id, 'This is note 19' as note, 2 as tray ";
+		$sql .= " UNION select 20 as note_id, 'This is note 20' as note, 1 as tray ";
+		$sql .= " UNION select 21 as note_id, 'This is note 21' as note, 3 as tray ";
+		$sql .= " UNION select 22 as note_id, 'This is note 22' as note, 3 as tray ";
+		$sql .= " UNION select 23 as note_id, 'This is note 23' as note, 3 as tray ";
 		$rows = sql($sql);
 		$nReturn = min(count($rows), $chunkSize);
+
+		// prepare the array ready for the javascript client
+		for ($i=0; $i<count($rows); $i++) {
+			$rows[$i]['tray'] = intval($rows[$i]['tray']);
+			$rows[$i]['oldtray'] = $rows[$i]['tray'];
+			$rows[$i]['action'] = 1;
+		}
 
 		// save the entire array - and the number already returned - in the session
 		$_SESSION['rev_index'] = $nReturn - 1; // return first five rows
@@ -105,13 +115,6 @@
 		$return["more"]      = ( $_SESSION['rev_count'] > $nReturn ? 1 : 0);
 		$return["notes"]     = array_slice($rows, 0, $nReturn);
 	}
-
-	//print "<br>\n";
-	//print_r($_SESSION);
-	//print "rev_notes: " . $_SESSION['rev_notes'] . "<br>";
-	//print "rev_count: " . $_SESSION['rev_count'] . "<br>";
-	//print "rev_index: " . $_SESSION['rev_index'] . "<br>";
-	//print "<br>\n";
 
     ack(json_encode($return), 'get_summary.php request');
 ?>

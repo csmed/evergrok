@@ -24,30 +24,30 @@
     <div id="fixedbar" class="fullwidth" data-role="header">
         <div id="controls">
 			<div class="fifth ctrl"><img onclick="exit()" src="img/back24.png"></div>
-			<div class="fifth ctrl"><img onclick="shareMenu()" class="ptr" src="img/share24.png"></div>
-			<div class="fifth ctrl" id="rev_counter" onclick="scrollTop()">3 / 25</div>
+			<div class="fifth ctrl" onmousedown="clk(this);" onmouseup="unclk(this)"><img id="sharebtn" onclick="shareMenu();" class="ptr" src="img/share24.png"></div>
+			<div class="fifth ctrl" id="rev_counter" onclick="scrollToTop()">loading...</div>
 			<div class="fifth ctrl"><img onclick="forgotIt()" src="img/head24.png"></div>
 			<div class="fifth ctrl"><img onclick="lessCommon()" class="ptr" src="img/menu24.png"></div>
         </div>
         <div id="trays">
             <div class="quarter">
 				<div class="tray">
-					<img id="tray1" class="tray" src="img/cards0.png"><span id="badge1" class="badge">0</span>
+					<img id="tray1" class="tray" src="img/cards0.png"><span id="badge1" class="badge">&nbsp;&nbsp;</span>
 				</div>
 				<span class="tray">New Item</span></div>
             <div class="quarter">
 				<div class="tray">
-					<img id="tray2" class="tray" src="img/cards0.png"><span id="badge2" class="badge">0</span>
+					<img id="tray2" class="tray" src="img/cards0.png"><span id="badge2" class="badge">&nbsp;&nbsp;</span>
 				</div>
 				<span class="tray">Learning</span></div>
             <div class="quarter">
 				<div class="tray">
-					<img id="tray3" class="tray" src="img/cards0.png"><span id="badge3" class="badge">0</span>
+					<img id="tray3" class="tray" src="img/cards0.png"><span id="badge3" class="badge">&nbsp;&nbsp;</span>
 				</div>
 				<span class="tray">Know It</span></div>
             <div class="quarter">
 				<div class="tray">
-					<img id="tray4" class="tray" src="img/cards0.png"><span id="badge4" class="badge">0</span>
+					<img id="tray4" class="tray" src="img/cards0.png"><span id="badge4" class="badge">&nbsp;&nbsp;</span>
 				</div>
 				<span class="tray">Expert</span></div>
         </div>

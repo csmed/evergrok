@@ -9,15 +9,21 @@ var moreNotes     = true;
 var snackbarTimer;
 
 // constantsW
-var DELETE       = '-2';
-var SKIP         = '-1';
-var DONE         = '0';
-var KNOWIT       = '1';
-var FORGOTIT     = '2';
-var REALLYKNOWIT = '3';
+var DELETE       = -2;
+var SKIP         = -1;
+var DONE         = 0;
+var KNOWIT       = 1;
+var FORGOTIT     = 2;
+var REALLYKNOWIT = 3;
 
 $(document).ready(function() {
 	initSwiper(function() { prefetch(true); });
+	
+	// left and right arrows act as swipes
+	$("body").keydown(function(e){
+		if ((e.keyCode || e.which) == 37) { mySwiper.swipePrev(); } // left arrow
+		if ((e.keyCode || e.which) == 39) { mySwiper.swipeNext(); } // right arrow
+	});
 });
 
 $( window ).on( "orientationchange", function( event ) {
@@ -30,8 +36,8 @@ $( window ).on( "orientationchange", function( event ) {
 //$(window).on("load", function() {
 //$(document).ready(function() {
 $(window).load(function() {
-	setTimeout(function(){
-		scrollTop();
+	setTimeout(function() {
+		scrollToTop();
 		setSizes();
 	},100);
 
@@ -44,7 +50,7 @@ $(window).load(function() {
 	*/
 });
 
-function scrollTop () {
+function scrollToTop () {
 	// scroll to hide the heading
 	$('html,body').scrollTop($("#heading").outerHeight());
 }
@@ -71,6 +77,33 @@ function setSizes () { // set fixed size element to screen extents (if small scr
 		$(this).attr('style', $(this).attr('style') + '; width: ' + width + 'px !important;');
 	});
 	$('.middle').css('margin-top', Math.round(height/2));
+
+	
+	// setup animations
+	var top = $('#tray1').offset().top;
+	// 1 - 2
+	var left = $('#tray1').offset().left;
+	var width = $('#tray2').offset().left - $('#tray1').offset().left;
+	$('body').prepend("<div id='holder1-2' class='flyerholder' style='left:" + left + "px;top:" + top + "px;width:" + width + "px'></div>");
+	$('#holder1-2').append("<div id='flyer1-2' class='flyer'></div>");
+	// 1 - 3
+	width = $('#tray3').offset().left - $('#tray1').offset().left;
+	$('body').prepend("<div id='holder1-3' class='flyerholder' style='left:" + left + "px;top:" + top + "px;width:" + width + "px'></div>");
+	$('#holder1-3').append("<div id='flyer1-3' class='flyer'></div>");
+	// 2 - 3
+	left = $('#tray2').offset().left;
+	width = $('#tray3').offset().left - $('#tray2').offset().left;
+	$('body').prepend("<div id='holder2-3' class='flyerholder' style='left:" + left + "px;top:" + top + "px;width:" + width + "px'></div>");
+	$('#holder2-3').append("<div id='flyer2-3' class='flyer'></div>");
+	// 2 - 4
+	width = $('#tray4').offset().left - $('#tray2').offset().left;
+	$('body').prepend("<div id='holder2-4' class='flyerholder' style='left:" + left + "px;top:" + top + "px;width:" + width + "px'></div>");
+	$('#holder2-4').append("<div id='flyer2-4' class='flyer'></div>");
+	// 3 - 4
+	left = $('#tray3').offset().left;
+	width = $('#tray4').offset().left - $('#tray3').offset().left;
+	$('body').prepend("<div id='holder3-4' class='flyerholder' style='left:" + left + "px;top:" + top + "px;width:" + width + "px'></div>");
+	$('#holder3-4').append("<div id='flyer3-4' class='flyer'></div>");
 
 	/*
 	log("height=" + height);
@@ -106,18 +139,16 @@ function prefetch (initial) {
 					// j.more
 					// j.notes { note_id, tray, note }
 
-					// summary info
+					// insert summary info
 					if (initial) {
 						$('#heading').html("<h2>" + j.title + "(" + j.total_count + " notes)</h2>");
 						nRevNotes = j.rev_count;
 						$('#rev_counter').html("1 / " + nRevNotes);
-						if (j.more == 0)
-							moreNotes = false;
 
 						// save notes & trays in local arrays
 						notes = j.notes;
 						trays = j.trays;
-						redrawTrays(true);
+						drawTrays(true);
 					} else {
 						// append new notes to 'notes' array
 						notes = notes.concat(j.notes);
@@ -130,7 +161,7 @@ function prefetch (initial) {
 					}
 
 					// check to see if there is more to come after this set
-					if (j.more == 0) {
+					if (j.more == 0 && moreNotes) {
 						// append the "slideshow finished" slide
 						slideHTML = $('#shareSlide').html();
 						mySwiper.createSlide(slideHTML).append();
@@ -139,7 +170,7 @@ function prefetch (initial) {
 
 					// scroll to top if this is the first load
 					if (initial)
-						scrollTop();
+						scrollToTop();
 				},
 				error: function(x,s,e) {
 					alert(x.responseText);
@@ -149,23 +180,33 @@ function prefetch (initial) {
 	}
 }
 
-function redrawTrays (initial) {
+function drawTrays (initial) {
 	var nCards = 0;
 	var maxCards = 0;
 	var activeTray = notes[mySwiper.activeIndex].tray;
 
+	// draw badges
 	for (i=1; i<=4; i++) {
 		nCards = trays[i];
+		
 		$('#badge' + i).html(nCards);
+		if (nCards >= 10)
+			$('#badge' + i).css('padding', '1px 3px');
+		else
+			$('#badge' + i).css('padding', '1px 7px');
+
 		if (nCards > maxCards)
 			maxCards = nCards;
 	}
 
-	if (initial && maxCards > 4)
-		qtyDivisor = Math.ceil(maxCards / 4);
+	if (initial)
+		qtyDivisor = Math.max(1, maxCards / 4);
 
+	// draw trays
 	for (i=1; i<=4; i++) {
 		nCards = Math.round(trays[i] / qtyDivisor);
+		if (trays[i] > 0 && nCards == 0)
+			nCards=1;
 		if (i == activeTray) {
 			$('#tray' + i).attr('src', '/img/cards' + nCards + 'a.png');
 		} else {
@@ -176,8 +217,17 @@ function redrawTrays (initial) {
 
 function nextNote () {
 	var goBack = false;
-	var index = mySwiper.activeIndex -1;
-	scrollTop();
+	var index = mySwiper.activeIndex-1;
+	var current = mySwiper.activeIndex;
+	scrollToTop();
+	
+	// if we move off this note in less than a second, consider it a skip
+	if (notes[current].action == KNOWIT) {
+		notes[current].action = SKIP;
+		setTimeout(function() {
+			notes[current].action = KNOWIT;
+		}, 1000);
+	}
 
 	// act & give feedback
 	log("notes[index].action=" + notes[index].action);
@@ -218,7 +268,7 @@ function nextNote () {
 			break;
 	}
 
-	redrawTrays(false);
+	//drawTrays(false);
 
 	if (index < nRevNotes-1) {
 		//visibleIndex++;                       // TODO: deal with the possibility of sliding two slides in one go
@@ -233,7 +283,7 @@ function nextNote () {
 }
 
 function prevNote () {
-	redrawTrays(false);
+	//drawTrays(false);
 	return true;
 }
 
@@ -392,39 +442,41 @@ function snackbar (behaviour, message, action, onclick, actioncolour) {
 }
 
 function markRevised (index) {
-	var fromTray = parseInt(notes[index].tray);
+	var fromTray = notes[index].tray;
 	var toTray = fromTray + 1;
 
 	// TODO - AJAX database call
 
 	if (fromTray < 4) {
+		fly (fromTray, toTray);
 		// move note forward one tray
-		notes[index].tray = parseInt(notes[index].tray) +1;
+		notes[index].tray = toTray;
 
-		trays[fromTray] = parseInt(trays[fromTray]) -1;
-		trays[toTray] = parseInt(trays[toTray]) +1;
+		trays[fromTray] = trays[fromTray] -1;
+		trays[toTray] = trays[toTray] +1;
 	}
 }
 
 function unmarkRevised (index) {
-	var fromTray = parseInt(notes[index].tray);
-	var toTray = fromTray - 1;
+	var fromTray = notes[index].tray;
+	var toTray = notes[index].oldtray;
 
 	// TODO - AJAX database call
 
-	if (fromTray > 1) {
+	if (fromTray != toTray) {
+		fly (fromTray, toTray);
 		// allow note to be revised again
 		notes[index].action = KNOWIT;
 		// move note backward one tray
-		notes[index].tray = parseInt(notes[index].tray) -1;
+		notes[index].tray = toTray;
 
-		trays[fromTray] = parseInt(trays[fromTray]) -1;
-		trays[toTray] = parseInt(trays[toTray]) +1;
+		trays[fromTray] = trays[fromTray] -1;
+		trays[toTray] = trays[toTray] +1;
 	}
 }
 
 function markForgotIt (index) {
-	// the card doesn't need to change trays
+	// the note doesn't need to change trays
 
 	// TODO - AJAX database call
 
@@ -432,7 +484,7 @@ function markForgotIt (index) {
 }
 
 function unmarkForgotIt (index) {
-	// the card doesn't need to change trays
+	// the note doesn't need to change trays
 
 	// TODO - AJAX database call
 
@@ -440,32 +492,40 @@ function unmarkForgotIt (index) {
 }
 
 function markReallyKnowIt (index) {
-	var fromTray = parseInt(notes[index].tray);
+	var fromTray = notes[index].tray;
 	var toTray = fromTray + 2;
 
 	// TODO - AJAX database call
 
 	if (fromTray < 4) {
-		if (fromTray == 3) {
-			// move note to the last tray
+		fly (fromTray, toTray);
+		// don't move it past the last tray
+		if (toTray > 4)
 			toTray = 4;
-			notes[index].tray = parseInt(notes[index].tray) +1;
-		} else {
-			// move note forward two trays
-			notes[index].tray = parseInt(notes[index].tray) +2;
-		}
 
-		trays[fromTray] = parseInt(trays[fromTray]) -1;
-		trays[toTray] = parseInt(trays[toTray]) +1;
+		notes[index].tray = toTray;
+		trays[fromTray]--;
+		trays[toTray]++;
 	}
 
 	log("markReallyKnowIt(" + index + ");");
 }
 
 function unmarkReallyKnowIt (index) {
-	// need a way to find out the previous tray of the note, then put it back
+	var fromTray = notes[index].tray;
+	var toTray = notes[index].oldtray;
 
 	// TODO - AJAX database call
+
+	if (fromTray != toTray) {
+		fly (fromTray, toTray);
+		// allow note to be revised again
+		notes[index].action = KNOWIT;
+
+		notes[index].tray = toTray;
+		trays[fromTray]--;
+		trays[toTray]++;
+	}
 
 	log("unmarkReallyKnowIt(" + index + ");");
 }
@@ -492,4 +552,25 @@ function initSwiper (callback) {
 		mySwiper.swipeNext();
 	})
 	callback();
+}
+
+function clk (obj) {
+	$(obj).css('background', 'rgba(0,0,0,0.4)');
+}
+function unclk (obj) {
+	setTimeout(function() {
+		$(obj).css('background', 'rgba(0,0,0,0)')
+	}, 200);
+}
+
+function fly (from, to) {
+	var id = '#flyer' + from + '-' + to;
+	log(id);
+	$(id).removeClass('flyright');
+	setTimeout(function () {
+		$(id).addClass('flyright');
+		setTimeout(function () {
+			drawTrays();
+		}, 200);
+	}, 10);
 }

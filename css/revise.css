@@ -62,11 +62,11 @@ h3 {
 	z-index: 2;
 }
 #controls {
-	padding-top:12px;
-	padding-bottom:12px;
-	height:24px;
+	height:48px;
 }
 .ctrl {
+	padding-top:12px;
+	padding-bottom:12px;
 	font-size: 16px;
 	height:24px;
 }
@@ -107,14 +107,14 @@ span.tray {
 	font-weight: 600;
 }
 .badge {
-  background: #BA070F;
-  color: #fff;
-  padding: 1px 7px;
-  position: absolute;
-  z-index: 2;
-  border-radius: 1em;
-  /* border: 1px solid #fff; */
-  min-height:18px;
+	background: #BA070F;
+	color: #fff;
+	padding: 1px 7px;
+	position: absolute;
+	z-index: 2;
+	border-radius: 1em;
+	/* border: 1px solid #fff; */
+	min-height:18px;
 }
 
 /* content */
@@ -204,4 +204,36 @@ img.shareicon {
 .swiper-slide {
 	/* Specify Slide's Size: */
 	width: 100%;
+}
+
+/* animations */
+.flyerholder {
+	position: fixed;
+	z-index: 1000;
+	height: 32px;
+}	
+.flyer {
+	opacity: 0;
+	position: relative;
+    width: 32px;
+    height: 32px;
+ 	color: yellow;
+	background: white;
+	z-index: 1000;
+}
+.flyright {
+    -webkit-animation: anim_right 400ms linear 0s 1 forwards; /* Chrome, Safari, Opera */
+    animation: anim_right 400ms linear 0s 1 forwards;
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes anim_right {
+    0%   {opacity:1; left: 0px; }
+    50% {opacity:1; left: 50%; }
+    100% {opacity:0; left: 100%; }
+}
+/* Standard syntax */
+@keyframes anim_right {
+    0%   {opacity:1; left: 0px; }
+    50% {opacity:1; left: 50%; }
+    100% {opacity:0; left: 100%; }
 }
