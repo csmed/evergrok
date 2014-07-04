@@ -8,7 +8,7 @@ var nSummaryNotes = 0;  // number of notes in this summary
 var moreNotes     = true;
 var snackbarTimer;
 
-// constantsW
+// constants
 var DELETE       = -2;
 var SKIP         = -1;
 var DONE         = 0;
@@ -16,9 +16,10 @@ var KNOWIT       = 1;
 var FORGOTIT     = 2;
 var REALLYKNOWIT = 3;
 
+// ready()
 $(document).ready(function() {
 	initSwiper(function() { prefetch(true); });
-	
+
 	// left and right arrows act as swipes
 	$("body").keydown(function(e){
 		if ((e.keyCode || e.which) == 37) { mySwiper.swipePrev(); } // left arrow
@@ -29,17 +30,20 @@ $(document).ready(function() {
 $( window ).on( "orientationchange", function( event ) {
 	log("orientation change");
 	setSizes();
-	log( "This device is in " + event.orientation + " mode" );
+	//log( "This device is in " + event.orientation + " mode" );
 });
 
-//$(document).bind("pageshow", function() {
-//$(window).on("load", function() {
-//$(document).ready(function() {
 $(window).load(function() {
 	setTimeout(function() {
 		scrollToTop();
 		setSizes();
 	},100);
+
+	if (getCookie("overlay1") == null) {
+		$('#overlay1').show();
+		$('#clickoutside').show();
+		//setCookie("overlay1", "1");  // TODO: re-enable this so users only see the overlay once
+	}
 
 	/*
 	log("heading.outerHeight=" + $("#heading").outerHeight());
@@ -66,6 +70,16 @@ function setSizes () { // set fixed size element to screen extents (if small scr
 	if ($('body').innerWidth() < width)
 		width = $('body').innerWidth();
 
+	// this is a HACK - correct the behaviour of the resizing then remove this!!!
+	/*
+	if ( $('#showme').is(':visible') ) {
+		$('#showme').hide();
+		setTimeout(function() {
+			$('#showme').show();
+		},50);
+	}
+	*/
+
 	// set elements with full width/height
 	$('.fullwidth').each(function() {
 		$(this).attr('style', $(this).attr('style') + '; width: ' + width + 'px !important;');
@@ -78,7 +92,7 @@ function setSizes () { // set fixed size element to screen extents (if small scr
 	});
 	$('.middle').css('margin-top', Math.round(height/2));
 
-	
+
 	// setup animations
 	var top = $('#tray1').offset().top;
 	// 1 - 2
@@ -104,11 +118,6 @@ function setSizes () { // set fixed size element to screen extents (if small scr
 	width = $('#tray4').offset().left - $('#tray3').offset().left;
 	$('body').prepend("<div id='holder3-4' class='flyerholder' style='left:" + left + "px;top:" + top + "px;width:" + width + "px'></div>");
 	$('#holder3-4').append("<div id='flyer3-4' class='flyer'></div>");
-
-	/*
-	log("height=" + height);
-	log("width=" + width);
-	*/
 }
 
 function log (text) {
@@ -142,6 +151,7 @@ function prefetch (initial) {
 					// insert summary info
 					if (initial) {
 						$('#heading').html("<h2>" + j.title + "(" + j.total_count + " notes)</h2>");
+						document.title = j.title + " - Revisy";
 						nRevNotes = j.rev_count;
 						$('#rev_counter').html("1 / " + nRevNotes);
 
@@ -185,10 +195,13 @@ function drawTrays (initial) {
 	var maxCards = 0;
 	var activeTray = notes[mySwiper.activeIndex].tray;
 
+	// update counter
+	$('#rev_counter').html((mySwiper.activeIndex+1) + " / " + nRevNotes);
+
 	// draw badges
 	for (i=1; i<=4; i++) {
 		nCards = trays[i];
-		
+
 		$('#badge' + i).html(nCards);
 		if (nCards >= 10)
 			$('#badge' + i).css('padding', '1px 3px');
@@ -220,13 +233,20 @@ function nextNote () {
 	var index = mySwiper.activeIndex-1;
 	var current = mySwiper.activeIndex;
 	scrollToTop();
-	
+
 	// if we move off this note in less than a second, consider it a skip
 	if (notes[current].action == KNOWIT) {
 		notes[current].action = SKIP;
 		setTimeout(function() {
 			notes[current].action = KNOWIT;
 		}, 1000);
+	}
+
+	// show second overlay
+	if (index == 3 && getCookie("overlay2") == null) {
+		$('#overlay2').show();
+		$('#clickoutside').show();
+		//setCookie("overlay2", "1");  // TODO: re-enable this so users only see the overlay once
 	}
 
 	// act & give feedback
@@ -236,7 +256,7 @@ function nextNote () {
 			// nothing to do
 			break;
 		case DELETE:
-			// delete 
+			// delete
 			snackbar("slide", "Deleting...", 'UNDO', function() { unDelete(notes[index].note_id); } );
 			notes[index].action = DONE;
 			// TODO: need to remove (hide?) the slide from the swiper
@@ -246,6 +266,7 @@ function nextNote () {
 			// skip and revert note to normal state in case we return and revise later
 			snackbar("slide", "Skipping...", 'MARK AS REVISED', function() { markRevised(index); snackbar("appear", "&#10004; Successfully revised"); } );
 			notes[index].action = KNOWIT;
+			drawTrays(false);
 			break;
 		case KNOWIT:
 			snackbar("slide", "Successfully revised", 'UNDO', function() { unmarkRevised(index); snackbar("appear", "&#10004; Successfully undone..."); mySwiper.swipePrev(); } );
@@ -332,6 +353,11 @@ function exit () {
 	alert("exit() called");
 }
 
+function hideOverlays () {
+	$('.overlay').hide();
+	$('#clickoutside').hide();
+}
+
 function hideMenus () {
 	hideLessCommon();
 	hideShare();
@@ -395,7 +421,8 @@ function share (site, url, txt) {
 	var link = map[site].replace('%URL%', encodeURIComponent('http://' + url)).replace('%TXT%', encodeURIComponent(txt));
 	console.log(link);
 
-	// TODO: add ga.send() to "/share"
+	// record Google Analytics conversion
+	ga('send', 'pageview', '/share');
 
 	snackbar("slide", "Opening share link...");
 	window.open(link, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
