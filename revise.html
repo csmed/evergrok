@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>EverGrok</title>
+<title>Revisy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <meta http-equiv="Default-Style" content="text/css">
@@ -11,11 +11,9 @@
 <link rel="stylesheet" href="/css/idangerous.swiper.css">
 <link rel="stylesheet" href="/css/revise.css">
 
-<!--
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
--->
 <script src="/js/jquery-2.1.1.min.js"></script>
 <script src="/js/idangerous.swiper-2.1.min.js"></script>
+<script src="/js/common.js"></script>
 <script src="/js/revise.js"></script>
 </head>
 <body>
@@ -23,10 +21,12 @@
 <div id="page" class="fullwidth" data-role="page">
     <div id="fixedbar" class="fullwidth" data-role="header">
         <div id="controls">
-			<div class="fifth ctrl"><img onclick="exit()" src="img/back24.png"></div>
-			<div class="fifth ctrl" onmousedown="clk(this);" onmouseup="unclk(this)"><img id="sharebtn" onclick="shareMenu();" class="ptr" src="img/share24.png"></div>
+			<div class="fifth ctrl"><img onclick="exit()" class="ptr" src="img/back24.png"></div>
+			<div class="fifth ctrl"> <!-- onmousedown="clk(this);" onmouseup="unclk(this)" -->
+				<img id="sharebtn" onclick="shareMenu();" class="ptr" src="img/share24.png">
+			</div>
 			<div class="fifth ctrl" id="rev_counter" onclick="scrollToTop()">loading...</div>
-			<div class="fifth ctrl"><img onclick="forgotIt()" src="img/head24.png"></div>
+			<div class="fifth ctrl"><img onclick="forgotIt()" class="ptr" src="img/head24.png"></div>
 			<div class="fifth ctrl"><img onclick="lessCommon()" class="ptr" src="img/menu24.png"></div>
         </div>
         <div id="trays">
@@ -34,7 +34,7 @@
 				<div class="tray">
 					<img id="tray1" class="tray" src="img/cards0.png"><span id="badge1" class="badge">&nbsp;&nbsp;</span>
 				</div>
-				<span class="tray">New Item</span></div>
+				<span class="tray">New</span></div>
             <div class="quarter">
 				<div class="tray">
 					<img id="tray2" class="tray" src="img/cards0.png"><span id="badge2" class="badge">&nbsp;&nbsp;</span>
@@ -52,32 +52,82 @@
 				<span class="tray">Expert</span></div>
         </div>
     </div>
+
 	<div id="container" class="belowtrays minheight" role="main" class="ui-content">
 		<div id="heading">
 			<h1>Loading...</h1>
 		</div>
 		<div id="content" class="swiper-container minheight">
-			<div class="swiper-wrapper">
-				<!--
-				<div class="swiper-slide"> slide 1: <img src="img/cards0.png"> </div>
-				<div class="swiper-slide"> slide 2: <img src="img/cards1.png"> </div>
-				<div class="swiper-slide">
-					<div class="content-slide">
-						<p class="title">slide 3: Yo! Bro!</p>
-					</div>
-				</div>
-				-->
-			</div>
+			<div class="swiper-wrapper"></div>
 		</div>
 		<div class="pagination"></div>
 	</div>
 
-	<!--
-	<div id="prev" class="middle fixed" style="top:0;left:0;z-index:2;"><img onclick="previous(true);" src="img/previous.png" style="width:15px"></div>
-	<div id="next" class="middle fixed" style="top:0;right:0;z-index:2;"><img onclick="knowIt(true);" src="img/next.png" style="width:15px"></div>
-	-->
-
-	<div id="clickoutside" class="fullheight fullwidth fixed" style="display:none" onclick="hideMenus()">
+	<div id="clickoutside" class="fullheight fullwidth fixed" onclick="hideMenus()" style="display:none">
+	</div>
+	<div id="overlay1" class="fullheight fullwidth fixed overlay" onclick="hideOverlays()" style="display:none">
+		<div class="overlayclose">
+			<img src="/img/closew24.png">
+		</div>
+		<div id="overlay1a">
+			<img src="/img/arrowright.png" style="max-width:20%"><br>
+			<div style="float:right; text-align:left; padding-left:20%; ">
+				Tap here when a slide is<br>
+				<span class="overlay_emph">difficult to learn</span> and you<br>
+				want to revise it more frequently
+			</div>
+		</div>
+		<div class="bottom">
+			<div style="text-align:center; margin-bottom:10%;">
+				<img src="/img/revisy32.png"><br>
+				<i>Improve your learning productivity.</i>
+			</div>
+			<div class="half">
+				<div style="text-align:left; padding-left:10px;">
+					swipe left after<br>
+					you have <span class="overlay_emph">successfully</span><br>
+					<span class="overlay_emph">revised</span> <span class="anitem">a slide</span><br>
+					<img src="/img/swipeleft.png" style="max-width:40%">
+				</div>
+			</div>
+			<div class="half">
+				<div style="text-align:right; padding-right:10px">
+					swipe right to<br>
+					<span class="overlay_emph">go back</span> to the<br>
+					previous <span class="item">slide</span><br>
+					<img src="/img/swiperight.png" style="max-width:40%">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="overlay2" class="fullheight fullwidth fixed overlay" onclick="hideOverlays()" style="display:none">
+		<div class="overlayclose">
+			<img src="/img/closew24.png">
+		</div>
+		<div id="overlay2a">
+			<div class="quarter overlay2a">
+				<img src="/img/arrowup.png" style="max-width:80%; max-height:10%"><br>
+				<div>
+				check this out<br>
+				<span class="overlay_emph">brother of mine</span>
+				</div>
+			</div>
+			<div class="quarter overlay2a">
+				<img src="/img/arrowup.png" style="max-width:80%; max-height:10%"><br>
+				check this out<br>
+				<span class="overlay_emph">brother of mine</span>
+			</div>
+			<div class="quarter overlay2a">
+				<img src="/img/arrowup.png" style="max-width:80%; max-height:10%"><br>
+				check this out<br>
+				<span class="overlay_emph">brother of mine</span>
+			</div>
+			<div class="quarter overlay2a">
+				<img src="/img/arrowup.png" style="max-width:80%; max-height:10%"><br>
+				check this out<br>
+				<span class="overlay_emph">brother of mine</span>
+			</div>
+		</div>
 	</div>
 	<div id="lesscommon" class="belowcontrols fullwidth fixed" style="display:none">
 		<div class="closebtn"><img onclick="hideLessCommon();" src="img/close24.png"></div>
